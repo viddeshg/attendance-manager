@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%= render 'layouts/links' %>
+  <%= render 'layouts/styles' %>
+</head>
+<body>
+  <div class="container">
+    <%= render 'layouts/navbar' %>
+    <div class="row">
+      <div class="col offset-m2">
+        <video autoplay id="qr-video" width="400" height="400"></video>
+        <b>Detected QR code: </b>
+        <span id="cam-qr-result"></span>
+        <hr>
+      </div>
+    </div>
+  </div>
+  <%= render 'layouts/scripts' %>
+
+<script type="module">
+    import QrScanner from "/js/qr-scanner.js";
+    const video = document.getElementById('qr-video');
+    const camQrResult = document.getElementById('cam-qr-result');
+    const scanner = new QrScanner(video, result => setResult(camQrResult, result));
+    scanner.start();
+</script>
+</body>
+</html>
