@@ -3,4 +3,8 @@ Rails.application.routes.draw do
 
   root 'home#home'
 
+  get '/faculty', to: 'faculty#index'
+
+  get '/student', to: 'student#index'
+  get '/student/scan', to: 'student#scan'
 end
