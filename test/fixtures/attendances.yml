@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  rollno: 1
+  cc: MyString
+  date: MyString
+
+two:
+  rollno: 1
+  cc: MyString
+  date: MyString
