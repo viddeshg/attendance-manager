@@ -1,0 +1,22 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Dateoflecture:</strong>
+  <%= @lecture.dateOfLecture %>
+</p>
+
+<p>
+  <strong>Cc:</strong>
+  <%= @lecture.cc %>
+</p>
+
+<p>
+  <strong>Qrkey:</strong>
+  <%= @lecture.qrkey %>
+</p>
+
+
+<img src="https://api.qrserver.com/v1/create-qr-code/?data=<%= @lecture.qrkey %>&amp;size=500x500" alt="" title="" />
+
+<%= link_to 'Edit', edit_lecture_path(@lecture) %> |
+<%= link_to 'Back', lectures_path %>

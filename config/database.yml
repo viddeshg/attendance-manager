@@ -81,5 +81,3 @@ test:
 production:
   <<: *default
   database: attendance-manager_production
-  username: attendance-manager
-  password: <%= ENV['ATTENDANCE-MANAGER_DATABASE_PASSWORD'] %>
