@@ -4,7 +4,7 @@ class StudentController < ActionController::Base
   end
 
   def scan
-
+    @attendance = Attendance.new
   end
 
   def show

@@ -13,16 +13,16 @@
 
   <div class="field">
     <%= form.label :Date %>
-    <%= form.text_field :dateOfLecture, id: :lecture_dateOfLecture %>
+    <%= form.text_field :dateOfLecture, id: :lecture_dateOfLecture, class: 'datepicker' %>
   </div>
 
   <div class="field">
-    <%= form.label :cc %>
+    <%= form.label 'Course Code' %>
     <%= form.text_field :cc, id: :lecture_cc %>
   </div>
 
   <div class="field">
-    <%= form.label :qrkey %>
+    <%= form.label 'QR Key' %>
     <%= form.text_field :qrkey, id: :lecture_qrkey %>
   </div>
 

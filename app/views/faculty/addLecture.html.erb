@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Faculty - Add Lecture</title>
+  <%= render 'layouts/links' %>
+  <%= render 'layouts/styles' %>
+  <%= render 'faculty/facultyStyles' %>
+</head>
+<body>
+<%= render 'faculty/sidenav' %>
+<header>
+  <nav class="top-nav" style="height: 100px; border-bottom: 1px solid #dbdbdb;">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="row">
+          <div class="col s12 m10 offset-m1">
+            <h1 class="header" style="color: #333; font-size: 2rem;">
+              <a href="" data-target="mobile-demo" class="sidenav-trigger hide-on-med-and-up" ><i class="fas fa-bars" style="color: #333; line-height: inherit;"></i></a>
+              Add Lecture
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container" id="main">
+    <br><br>
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+
+        <form class="col s12 m6">
+          <div class="input-field col s12 m8">
+              <select id="course_code">
+                <option value="" disabled selected>Choose Course</option>
+                <option value="IT1">CAO</option>
+                <option value="IT2">DAA</option>
+                <option value="IT3">OS</option>
+                <option value="IT4">IDS</option>
+                <option value="IT5">CSS</option>
+                <option value="IT6">IS</option>
+                <option value="IT7">BIS</option>
+              </select>
+              <label for="course_code">Course</label>
+          </div>
+          <div class="input-field col s12 m4">
+            <select id="number_of_lectures">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+            <label for="number_of_lectures">Number of Lectures</label>
+          </div>
+          <div class="col s12">
+            <label for="date_of_lecture">Date of Lecture</label>
+            <input type="text" id="date_of_lecture" class="datepicker" placeholder="dd/mm/yyyy">
+          </div>
+          <div class="input-field col s12 m12">
+            <input placeholder="qrkey!1" id="key" type="text" class="validate">
+            <label for="key">Enter key for QR Code</label>
+          </div>
+
+          <div class="col s12 m12">
+            <!-- Modal Trigger -->
+            <a class="waves-effect waves-light btn addlecture modal-trigger" href="#modal1">Add Lecture</a>
+            <br>
+            <br>
+            <a style="text-decoration: none; color: #333; font-weight: 600;" href="/faculty"><i class="fas fa-long-arrow-alt-left"></i> Home</a>
+          </div>
+        </form>
+        <!-- Modal Structure -->
+        <div id="modal1" class="modal" style="width: 45%;">
+          <div class="modal-content">
+            <h5>Verify Details</h5>
+            <table class="striped">
+              <thead>
+                <th>Attribute</th>
+                <th>Value</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Course Code</td>
+                  <td id="displayCourseCode"></td>
+                </tr>
+                <tr>
+                  <td>Number of Lectures</td>
+                  <td id="displayNumberOfLectures"></td>
+                </tr>
+                <tr>
+                  <td>Date of Lecture</td>
+                  <td id="displayDateOfLecture"></td>
+                </tr>
+                <tr>
+                  <td>QR Code Key</td>
+                  <td id="displayKey"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a class="modal-close waves-effect waves-green btn-flat">Edit</a>&nbsp;
+            <a href="#!" type="submit" name="action" onclick="updateProfile(); return false;"  class="modal-close waves-effect waves-green btn-flat submit">Add Lecture</a>
+          </div>
+        </div>
+        <div id="modal2" class="modal" style="width: 25%;">
+          <div class="modal-content">
+            <table class="striped">
+              <tbody>
+              <tr>
+                <td>Student Count</td>
+                <td id="student_count"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" type="submit" name="action" class="modal-close waves-effect waves-green btn-flat submit">Close</a>
+          </div>
+        </div>
+
+        <!-- QR Code Display -->
+        <div class="col m6 s12 details hide">
+
+          <div class="input-field successClass errorClass center">
+            <h7 id="feedback"></h7>
+          </div>
+          <br>
+
+          <table class="striped">
+            <tbody>
+            <tr>
+              <td>Course Code</td>
+              <td id="displayCourseCode2"></td>
+            </tr>
+            <tr>
+              <td>Number of Lectures</td>
+              <td id="displayNumberOfLectures2"></td>
+            </tr>
+            <tr>
+              <td>Date of Lecture</td>
+              <td id="displayDateOfLecture2"></td>
+            </tr>
+            <tr>
+              <td>QR Code Key</td>
+              <td id="displayKey2"></td>
+            </tr>
+            </tbody>
+          </table>
+          <br>
+
+
+          <a class="waves-effect waves-light btn showqr" target="_blank" href="">Share QR Code</a>
+          <a class="waves-effect waves-light btn modal-trigger" onclick="getStudentCount()" href="#modal2">Student Count</a>
+
+          <br>
+            <br>
+            <a style="text-decoration: none; color: #333; font-weight: 600;" href="/faculty/addLecture"><i class="fas fa-long-arrow-alt-left"></i> Add Lecture</a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<%= render 'firebase/initialize' %>
+<%= render 'layouts/scripts' %>
+<%= render 'layouts/cryptojs' %>
+<script>
+//     User is signed in.
+    var Crypt = new Crypt();  // constructor
+
+    $('.addlecture').click(function () {
+        var displayKey = $('#key').val();
+        var ciphertext = Crypt.AES.encrypt(displayKey,"viddesh");
+        //      var plaintext  = Crypt.AES.decrypt(ciphertext);
+        $('.showqr').attr("href","https://api.qrserver.com/v1/create-qr-code/?size=900x900&data="+ciphertext);
+
+    });
+</script>
+<script>
+    // Get the input field
+    var main = document.getElementById("main");
+
+    // Execute a function when the user releases a key on the keyboard
+    main.addEventListener("keyup", function(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("updateButton").click();
+        }
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('.facultyFeature').click(function(){
+            window.location = $(this).find("a").attr("href");
+            return false;
+        });
+
+        $('.modal2').modal({
+            dismissible: true
+        });
+
+        $('.addlecture').click(function(){
+
+            var displayKey = $('#key').val();
+            var displayCourseCode = $('#course_code').val();
+            var displayDateOfLecture = $('#date_of_lecture').val();
+            var displayNumberOfLectures = $('#number_of_lectures').val();
+            $('#displayKey, #displayKey2').text(displayKey);
+            $('#displayCourseCode, #displayCourseCode2').text(displayCourseCode);
+            $('#displayDateOfLecture, #displayDateOfLecture2').text(displayDateOfLecture);
+            $('#displayNumberOfLectures, #displayNumberOfLectures2').text(displayNumberOfLectures);
+        });
+
+        $('.submit').click(function () {
+            $('form').addClass('hide');
+            $('.details').removeClass('hide');
+        });
+    });
+</script>
+<script>
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            // User is signed in.
+
+            var userId = firebase.auth().currentUser.uid;
+
+//            return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+//                var course_code = (snapshot.val() && snapshot.val().course_code) || 'Anonymous';
+//                var number_of_lectures = (snapshot.val() && snapshot.val().number_of_lectures) || 'Anonymous';
+//                var date_of_lecture = (snapshot.val() && snapshot.val().date_of_lecture) || 'Anonymous';
+//                $('#course_code').val(course_code);
+//                $('#number_of_lectures').val(number_of_lectures);
+//                $('#date_of_lecture').val(date_of_lecture);
+//                $('.select-dropdown').click();
+//                $('.select-dropdown').click();
+//            });
+
+        } else {
+            // No user is signed in.
+        }
+    });
+
+    function getStudentCount() {
+        var userDate = $('#date_of_lecture').val();
+        var userSubject = $('#course_code').val();
+        var month = userDate.substring(0,2);
+        var day = userDate.substring(3,6);
+
+        return firebase.database().ref('lectures/' + userSubject +'/'+ month + '/' + day + '/').once('value').then(function(snapshot) {
+            var student_count = (snapshot.val() && snapshot.val().student_count) || 'Anonymous';
+            $('#student_count').text(student_count);
+        });
+    }
+
+    function updateProfile() {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+
+                var userId = user.uid;
+                var course_code = $('#course_code').val();
+                var number_of_lectures = $('#number_of_lectures').val();
+                var date_of_lecture = $('#date_of_lecture').val();
+                var key = $('#key').val();
+
+                function writeUserData(userId, course_code, number_of_lectures, date_of_lecture, key) {
+                    firebase.database().ref('lectures/' + course_code + '/' + date_of_lecture ).set({
+                        number_of_lectures: number_of_lectures,
+                        date_of_lecture: date_of_lecture,
+                        qr_key: key,
+                        student_count: "0"
+
+                        }, function(error) {
+                            if (error) {
+                                $('#feedback').text(errorMessage);
+                                $('.errorClass').css("display","block");
+                            } else {
+                                // Data saved successfully!
+                                $('#feedback').text("Profile Updated.");
+                                $('.successClass').css("display","block");
+                            }
+                        }
+                    );
+                }
+                writeUserData(userId, course_code, number_of_lectures, date_of_lecture, key);
+
+
+            } else {
+                // No user is signed in.
+            }
+        });
+    }
+    $(document).ready(function(){
+        $('.facultyFeature').click(function(){
+            window.location = $(this).find("a").attr("href");
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

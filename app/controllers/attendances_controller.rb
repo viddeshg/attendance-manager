@@ -25,16 +25,17 @@ class AttendancesController < ApplicationController
   # POST /attendances.json
   def create
     @attendance = Attendance.new(attendance_params)
+    @lectures = Lecture.all
 
-    respond_to do |format|
-      if @attendance.save
-        format.html { redirect_to @attendance, notice: 'Attendance was successfully created.' }
-        format.json { render :show, status: :created, location: @attendance }
-      else
-        format.html { render :new }
-        format.json { render json: @attendance.errors, status: :unprocessable_entity }
+     respond_to do |format|
+        if @attendance.save
+          format.html { redirect_to @attendance, notice: 'Attendance was successfully marked.' }
+          format.json { render :show, status: :created, location: @attendance }
+        else
+          format.html { render :new }
+          format.json { render json: @attendance.errors, status: :unprocessable_entity }
+        end
       end
-    end
   end
 
   # PATCH/PUT /attendances/1
@@ -69,6 +70,6 @@ class AttendancesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def attendance_params
-      params.require(:attendance).permit(:rollno, :cc, :date)
+      params.require(:attendance).permit(:rollno, :cc, :date, :qrkey)
     end
 end

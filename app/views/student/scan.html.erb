@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <%= render 'layouts/links' %>
+  <!--Import materialize.css-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"><link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <%= render 'layouts/styles' %>
+  <%= render 'student/studentStyles' %>
+  <style>
+    #cam-qr-result
+    {
+     color: white !important;
+    }
+  </style>
 </head>
 <body>
 <%= render 'student/sidenav' %>
@@ -12,7 +23,7 @@
       <div class="nav-wrapper">
         <div class="row">
           <div class="col s12 m10 offset-m1">
-            <h1 class="header" style="color: #333; font-size: 2rem;">Student Dashboard</h1>
+            <h1 class="header" style="color: #333; font-size: 2rem;">Scan QR</h1>
             <a href="#" data-target="mobile-demo" style="display: none; color:#333;" class="sidenav-trigger right top-nav hide-on-large-only"><i class="fas fa-bars"></i></a>
           </div>
         </div>
@@ -21,28 +32,170 @@
   </nav>
 </header>
 
+
 <main>
-  <div class="container">
-    <br><br>
+  <div class="container" id="main">
+    <br>
     <div class="row">
       <div class="col s12 m10 offset-m1">
-        <div class="card">
-          <div class="card-image">
-            <video muted autoplay playsinline id="qr-video" width="100%" height=""></video>
-            <canvas style="display:none;" id="debug-canvas"></canvas>
-            <span class="card-title"Scan the QR Code</span>
+        <form class="col s12">
+          <div class="row">
+            <div class="input-field col m7 s12">
+              <div class="feedbackClass center">
+                <h7 id="feedback"></h7>
+              </div>
+              <h7 id="feedback"></h7>
+            </div>
+            <div class="col m7 s12">
+              <div class="card-image">
+                <label for="name">Scan QR Code</label>
+                <video muted autoplay playsinline id="qr-video" width="100%" height=""></video>
+                <canvas style="display:none;" id="debug-canvas"></canvas>
+                <!--<span class="card-title">Scan the QR Code</span>-->
+              </div>
+              <div class="card-content">
+                <span id="cam-qr-result"></span>
+              </div>
+            </div>
+            <div class="input-field col m7 s12">
+              <input placeholder="Looking for QR Code Key..." value="" id="key" type="password" class="validate">
+              <label for="key">Key</label>
+            </div>
+            <div class="col m7 s12">
+              <label for="date_of_lecture">Date of Lecture</label>
+              <input type="text" id="date" class="datepicker" placeholder="mm">
+            </div>
+            <div class="input-field col m7 s12">
+              <select id="subject">
+                <option value="IT1">CAO</option>
+                <option value="IT2">DAA</option>
+                <option value="IT3">OS</option>
+                <option value="IT4">IDS</option>
+                <option value="IT5">CSS</option>
+                <option value="IT6">IS</option>
+                <option value="IT7">BIS</option>
+              </select>
+              <label>Select Subject</label>
+            </div>
+            <div class="col s12 m7">
+              <!-- Modal Trigger -->
+              <a class="waves-effect waves-light btn modal-trigger" onclick="markAttendance(); return false;" id="updateButton" href="">Mark Attendance</a>
+              <br>
+              <br>
+              <a style="text-decoration: none; color: #333; font-weight: 600;" href="/faculty"><i class="fas fa-long-arrow-alt-left"></i> Home</a>
+            </div>
           </div>
-          <div class="card-content">
-            <span id="cam-qr-result">Looking for QR Code . . .</span>
-          </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
 </main>
 
+<%= render 'firebase/initialize' %>
 <%= render 'layouts/scripts' %>
 <%= render 'layouts/scannerScript' %>
+<%= render 'layouts/cryptojs' %>
+
+<script>
+    var Crypt = new Crypt();  // constructor
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            var userId = firebase.auth().currentUser.uid;
+            var userKey = $('#key').val();
+            var userDate = $('#date').val();
+            var userSubject = $('#subject').val();
+
+        } else {
+            // No user is signed in.
+        }
+    });
+
+    // User is signed in.
+    function markAttendance() {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+
+                var userId = firebase.auth().currentUser.uid;
+                var ciphertext = $('#key').val();
+                var userKey  = Crypt.AES.decrypt(ciphertext,"viddesh");
+
+                var userDate = $('#date').val();
+                var userSubject = $('#subject').val();
+
+                var month = userDate.substring(0,2);
+                var day = userDate.substring(3,6);
+
+
+
+                return firebase.database().ref('lectures/' + userSubject +'/'+ month + '/' + day + '/').once('value').then(function(snapshot) {
+                    var key = (snapshot.val() && snapshot.val().qr_key) || 'Anonymous';
+
+                    if(key == userKey)
+                    {
+                        $('#feedback').text("Attendance Marked.");
+                        $('.feedbackClass').addClass('successClass');
+
+                        return firebase.database().ref('lectures/' + userSubject +'/'+ month + '/' + day + '/').once('value').then(function(snapshot) {
+                            var number_of_lectures = (snapshot.val() && snapshot.val().number_of_lectures) || 'Anonymous';
+                            var key = (snapshot.val() && snapshot.val().qr_key) || 'Anonymous';
+                            var date_of_lecture = (snapshot.val() && snapshot.val().date_of_lecture) || 'Anonymous';
+                            var count = (snapshot.val() && snapshot.val().student_count) || 'Anonymous';
+
+
+                            count = parseInt(count) + 1;
+                            var countString = count.toString();
+
+
+                            function writeUserData(countString) {
+                                firebase.database().ref('lectures/' + userSubject +'/'+ month + '/' + day + '/').set({
+                                    number_of_lectures: number_of_lectures,
+                                    date_of_lecture: date_of_lecture,
+                                    qr_key: key,
+                                    student_count: countString
+                                });
+                            }
+                            writeUserData(countString);
+                        });
+                    }
+                    else
+                    {
+                        $('#feedback').text("Invalid input. Try again.");
+                        $('.feedbackClass').addClass('errorClass');
+                    }
+
+                });
+
+            } else {
+                // No user is signed in.
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        $('.facultyFeature').click(function(){
+            window.location = $(this).find("a").attr("href");
+            return false;
+        });
+
+    });
+</script>
+<script>
+    // Get the input field
+    var main = document.getElementById("main");
+
+    // Execute a function when the user releases a key on the keyboard
+    main.addEventListener("keyup", function(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("updateButton").click();
+        }
+    });
+</script>
 
 </body>
 </html>

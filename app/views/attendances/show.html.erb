@@ -1,19 +1,59 @@
-<p id="notice"><%= notice %></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <%= render 'layouts/links' %>
+  <%= render 'layouts/styles' %>
+</head>
+<body>
+<%= render 'student/sidenav' %>
+<header>
+  <nav class="top-nav" style="height: 100px; border-bottom: 1px solid #dbdbdb;">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="row">
+          <div class="col s12 m10 offset-m1">
+            <h1 class="header" style="color: #333; font-size: 2rem;">Student Dashboard</h1>
+            <a href="#" data-target="mobile-demo" style="display: none; color:#333;" class="sidenav-trigger right top-nav hide-on-large-only"><i class="fas fa-bars"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
 
-<p>
-  <strong>Rollno:</strong>
-  <%= @attendance.rollno %>
-</p>
+<main>
+  <div class="container" >
+    <br><br>
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Cc:</strong>
-  <%= @attendance.cc %>
-</p>
+        <p>
+          <strong>Rollno:</strong>
+          <%= @attendance.rollno %>
+        </p>
 
-<p>
-  <strong>Date:</strong>
-  <%= @attendance.date %>
-</p>
+        <p>
+          <strong>Cc:</strong>
+          <%= @attendance.cc %>
+        </p>
 
-<%= link_to 'Edit', edit_attendance_path(@attendance) %> |
-<%= link_to 'Back', attendances_path %>
+        <p>
+          <strong>Date:</strong>
+          <%= @attendance.date %>
+        </p>
+
+        <%= link_to 'Edit', edit_attendance_path(@attendance) %> |
+        <%= link_to 'Back', attendances_path %>
+
+      </div>
+    </div>
+  </div>
+  </div>
+</main>
+
+<%= render 'layouts/scripts' %>
+<%= render 'layouts/scannerScript' %>
+
+</body>
+</html>

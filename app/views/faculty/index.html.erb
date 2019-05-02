@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Faculty - Home</title>
   <%= render 'layouts/links' %>
   <%= render 'layouts/styles' %>
+  <%= render 'faculty/facultyStyles' %>
 </head>
 <body>
 <%= render 'faculty/sidenav' %>
@@ -26,33 +28,48 @@
     <br><br>
     <div class="row">
       <div class="col s12 m10 offset-m1">
-        <!--<form class="col s12">-->
-          <!--<div class="row">-->
-            <!--<div class="input-field col s6">-->
-              <!--<input type="text" class="datepicker" placeholder="Date">-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="row">-->
-            <!--<div class="input-field col s6">-->
-              <!--<input type="text" class="datepicker" placeholder="Date">-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="row">-->
-            <!--<div class="input-field col s6">-->
-              <!--<input placeholder="Placeholder" id="first_name" type="text" class="validate">-->
-              <!--<label for="first_name">First Name</label>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</form>-->
-        <%= render 'form', lecture: @lecture %>
+          <div class="col m3 s6">
+            <div class="card facultyFeature">
+              <div class="card-content center">
+                <i class="fas fa-plus fa-3x"></i>
+                <br>
+                <a class="center featureLink" href="/faculty/addLecture">Add Lecture</a>
+              </div>
+            </div>
+        </div>
+        <!--render 'form', lecture: @lecture-->
 
       </div>
     </div>
   </div>
 </main>
 
+<%= render 'firebase/initialize' %>
 <%= render 'layouts/scripts' %>
-<%= render 'layouts/scannerScript' %>
+<script>
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in.
+        } else {
+            // No user is signed in.
+        }
+    });
+    function signOut() {
+        firebase.auth().signOut().then(function() {
+            console.log('Signed Out');
+        }, function(error) {
+            console.error('Sign Out Error', error);
+        });
+    }
+
+    $(document).ready(function(){
+        $('.facultyFeature').click(function(){
+            window.location = $(this).find("a").attr("href");
+            return false;
+        });
+    });
+</script>
+
 
 </body>
 </html>

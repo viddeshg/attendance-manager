@@ -1,22 +1,71 @@
-<p id="notice"><%= notice %></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <%= render 'layouts/links' %>
+  <%= render 'layouts/styles' %>
+</head>
+<body>
+<%= render 'faculty/sidenav' %>
+<header>
+  <nav class="top-nav" style="height: 100px; border-bottom: 1px solid #dbdbdb;">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="row">
+          <div class="col s12 m10 offset-m1">
+            <h1 class="header" style="color: #333; font-size: 2rem;">Lecture <%= @lecture.id %>
+            </h1>
+            <a href="#" data-target="mobile-demo" style="display: none; color:#333;" class="sidenav-trigger right top-nav hide-on-large-only"><i class="fas fa-bars"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
 
-<p>
-  <strong>Dateoflecture:</strong>
-  <%= @lecture.dateOfLecture %>
-</p>
+<main>
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+            <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Cc:</strong>
-  <%= @lecture.cc %>
-</p>
+          <p>
+            <strong style="font-weight: bold;">Date of Lecture:</strong>
+            <%= @lecture.dateOfLecture %>
+          </p>
 
-<p>
-  <strong>Qrkey:</strong>
-  <%= @lecture.qrkey %>
-</p>
+          <p>
+            <strong style="font-weight: bold;">Course Code:</strong>
+            <%= @lecture.cc %>
+          </p>
 
+          <p>
+            <strong style="font-weight: bold;">QR - Key:</strong>
+            <%= @lecture.qrkey %>
+          </p>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?data=<%= @lecture.qrkey %>&amp;size=500x500" alt="" title="" />
+          <!-- Modal Trigger -->
+          <a class="waves-effect waves-light btn modal-trigger" href="#modal1">View QR Code</a>
 
-<%= link_to 'Edit', edit_lecture_path(@lecture) %> |
-<%= link_to 'Back', lectures_path %>
+          <!-- Modal Structure -->
+          <div id="modal1" class="modal" style="width: 35%;">
+            <div class="center">
+              <img class="center" src="https://api.qrserver.com/v1/create-qr-code/?data=<%= @lecture.qrkey %>&amp;size=500x500" alt="" title="" />
+            </div>
+          </div>
+
+          <br>
+          <br>
+
+          <%= link_to 'Edit', edit_lecture_path(@lecture) %>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<%= render 'layouts/scripts' %>
+<%= render 'layouts/scannerScript' %>
+
+</body>
+</html>

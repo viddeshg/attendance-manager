@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Faculty - Profile</title>
+  <%= render 'layouts/links' %>
+  <%= render 'layouts/styles' %>
+  <%= render 'faculty/facultyStyles' %>
+</head>
+<body>
+<%= render 'faculty/sidenav' %>
+<header>
+  <nav class="top-nav" style="height: 100px; border-bottom: 1px solid #dbdbdb;">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="row">
+          <div class="col s12 m10 offset-m1">
+            <h1 class="header" style="color: #333; font-size: 2rem;">
+              <a href="" data-target="mobile-demo" class="sidenav-trigger hide-on-med-and-up" ><i class="fas fa-bars" style="color: #333; line-height: inherit;"></i></a>
+              Faculty Profile
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container" id="main">
+    <br><br>
+    <div class="row">
+      <div class="col s12 m10 offset-m1" style="padding-left: 0;">
+        <form class="col s12">
+          <div class="row">
+            <div class="input-field col m7 s12 successClass errorClass center">
+              <h7 id="feedback"></h7>
+            </div>
+            <div class="input-field col m7 s12">
+              <input placeholder="Placeholder" value="" id="name" type="text" class="validate">
+              <label for="name">First Name</label>
+            </div>
+            <div class="input-field col m7 s12">
+              <input placeholder="Placeholder" id="surname" type="text" class="validate">
+              <label for="surname">Surname</label>
+            </div>
+            <div class="input-field col m7 s12">
+              <%= render 'faculty/subjectOptions' %>
+              <label>Select Subjects</label>
+            </div>
+            <div class="col s12 m7">
+              <!-- Modal Trigger -->
+              <a class="waves-effect waves-light btn modal-trigger" onclick="updateProfile(); return false;" id="updateButton" href="">Update Profile</a>
+              <br>
+              <br>
+              <a style="text-decoration: none; color: #333; font-weight: 600;" href="/faculty"><i class="fas fa-long-arrow-alt-left"></i> Home</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%= render 'firebase/initialize' %>
+<%= render 'layouts/scripts' %>
+
+
+<script>
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            // User is signed in.
+
+            var userId = firebase.auth().currentUser.uid;
+
+            return firebase.database().ref('/users/faculty/' + userId).once('value').then(function(snapshot) {
+                var name = (snapshot.val() && snapshot.val().name) || 'Anonymous';
+                var surname = (snapshot.val() && snapshot.val().surname) || 'Anonymous';
+                var subjects = (snapshot.val() && snapshot.val().subjects) || 'Anonymous';
+                $('#name').val(name);
+                $('#surname').val(surname);
+                $('#subjects').val(subjects);
+                $('.select-dropdown').click();
+                $('.select-dropdown').click();
+            });
+
+        } else {
+            // No user is signed in.
+        }
+    });
+
+    function updateProfile() {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+
+                var userId = user.uid;
+                var name = $('#name').val();
+                var surname = $('#surname').val();
+                var subjects = $('#subjects').val();
+
+                function writeUserData(userId, name, surname, subjects) {
+                    firebase.database().ref('users/faculty/' + userId).set({
+                        name: name,
+                        surname: surname,
+                        subjects: subjects
+                    }, function(error) {
+                        if (error) {
+                            $('#feedback').text(errorMessage);
+                            $('.errorClass').css("display","block");
+                        } else {
+                            // Data saved successfully!
+                            $('#feedback').text("Profile Updated.");
+                            $('.successClass').css("display","block");
+                        }
+                    }
+                );
+                }
+                writeUserData(userId, name, surname, subjects);
+
+            } else {
+                // No user is signed in.
+            }
+        });
+    }
+    $(document).ready(function(){
+        $('.facultyFeature').click(function(){
+            window.location = $(this).find("a").attr("href");
+            return false;
+        });
+
+    });
+</script>
+<script>
+    // Get the input field
+    var main = document.getElementById("main");
+
+    // Execute a function when the user releases a key on the keyboard
+    main.addEventListener("keyup", function(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("updateButton").click();
+        }
+    });
+</script>
+</body>
+</html>

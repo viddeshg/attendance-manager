@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <%= render 'layouts/links' %>
+  <%= render 'layouts/styles' %>
+  <style>
+    .errorClass
+    {
+      background-color: #bb2124;
+      color: #fff;
+      border-radius: 5px;
+      padding: 0.5rem 1rem !important;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav class="top-nav" style="height: 100px; border-bottom: 1px solid #dbdbdb;">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="row">
+          <div class="col s12 m10 offset-m1">
+            <!-- HEAD -->
+            <h1 class="header" style="color: #333; font-size: 2rem;">
+              <a href="" data-target="mobile-demo" class="sidenav-trigger hide-on-med-and-up" ><i class="fas fa-bars" style="color: #333; line-height: inherit;"></i></a>
+              Registration
+            </h1>
+            <!-- END HEAD -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <%= render 'home/sidenav' %>
+
+</header>
+
+<main>
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        <div class="row">
+          <!--Student Login-->
+          <div class="login-div col s12 m6" style="padding-left: 0;">
+            <div class="input-field col s12 errorClass center">
+              <h6 id="sError"></h6>
+            </div>
+            <div class="input-field col s12">
+              <input placeholder="" id="user_email" type="text" class="validate">
+              <label for="first_name">Email Address</label>
+            </div>
+            <div class="input-field col s12">
+              <input placeholder="" id="user_password" type="password" class="validate">
+              <label for="first_name">Password</label>
+            </div>
+            <div class="input-field col s12">
+              <select id="type">
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+              </select>
+              <label>Registration type</label>
+            </div>
+            <div class="input-field col s12">
+              <a class="waves-effect waves-light btn modal-trigger" href="" onclick="signUp(); return false;"><i class="fas fa-user" style="line-height: initial;"></i> Sign Up</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%= render 'firebase/initialize' %>
+<%= render 'layouts/scripts' %>
+<script>
+
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in.
+            $('.login-div').addClass('hide');
+            $('.logoutBtn').removeClass('hide');
+
+            var route = $('#type').val();
+
+            window.location.href = '/'+route;
+
+        } else {
+            // No user is signed in.
+        }
+    });
+
+
+    function login()
+    {
+        var email = $('#user_email').val();
+        var pass = $('#user_password').val();
+
+        firebase.auth().signInWithEmailAndPassword(email, pass).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+
+            $('#sError').text(errorMessage);
+            $('.errorClass').css("display","block");
+        });
+    }
+
+    function signUp()
+    {
+        var email = $('#user_email').val();
+        var pass = $('#user_password').val();
+
+        firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+
+            $('#sError').text(errorMessage);
+            $('.errorClass').css("display","block");
+        });
+
+    }
+
+    function signOut() {
+        firebase.auth().signOut().then(function() {
+            console.log('Signed Out');
+        }, function(error) {
+            console.error('Sign Out Error', error);
+        });
+    }
+
+</script>
+
+</body>
+</html>

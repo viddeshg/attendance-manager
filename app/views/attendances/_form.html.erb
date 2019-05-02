@@ -25,16 +25,17 @@
     <%= form.label 'Date' %>
     <%= form.text_field :date, id: :attendance_date, class: 'datepicker' %>
   </div>
-
-    <div class="field">
-      <%= form.label 'QR Key' %>
-      <%= form.text_field :qrkey %>
+    <div class="card-image">
+      <video muted autoplay playsinline id="qr-video" width="100%" height=""></video>
+      <canvas style="display:none;" id="debug-canvas"></canvas>
+      <span class="card-title">Scan the QR Code</span>
     </div>
-
+    <div class="card-content">
+      <input id="cam-qr-result" type="text" class="validate">
+      <span id="cam-qr-result">Looking for QR Code . . .</span>
+    </div>
 
     <div class="actions">
-        <%= form.submit class: 'btn', value: 'Mark Attendance' %>
-    </div>
-
-    <br>
+    <%= form.submit class: 'btn' %>
+  </div>
 <% end %>

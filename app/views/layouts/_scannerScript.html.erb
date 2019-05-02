@@ -1,3 +1,4 @@
+
 <script type="module">
     import QrScanner from "/js/qr-scanner.min.js";
     const video = document.getElementById('qr-video');
@@ -13,7 +14,10 @@
         label.style.color = 'teal';
         clearTimeout(label.highlightTimeout);
         label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
-    }
+
+        $('#key').attr('value',result);
+
+       }
 
 
     // ####### Web Cam Scanning #######
